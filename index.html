@@ -6,13 +6,12 @@
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
         <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
         <link rel="stylesheet" href="css/MarkerCluster.css">
         <link rel="stylesheet" href="css/MarkerCluster.Default.css">
-        <link rel="stylesheet" href="css/leaflet-search.css">
-        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
-        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
         <style>
         html, body, #map {
             width: 100%;
@@ -27,7 +26,7 @@
         <div id="map">
         </div>
         <script src="js/qgis2web_expressions.js"></script>
-        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
         <script src="js/leaflet.rotatedMarker.js"></script>
         <script src="js/leaflet.pattern.js"></script>
         <script src="js/leaflet-hash.js"></script>
@@ -35,45 +34,19 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
-        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
-        <script src="js/leaflet-measure.js"></script>
         <script src="js/leaflet.markercluster.js"></script>
-        <script src="js/leaflet-search.js"></script>
-        <script src="data/Herbicidas_1.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/resistencias_of_1.js"></script>
         <script>
-        var highlightLayer;
-        function highlightFeature(e) {
-            highlightLayer = e.target;
-
-            if (e.target.feature.geometry.type === 'LineString') {
-              highlightLayer.setStyle({
-                color: '#ffff00',
-              });
-            } else {
-              highlightLayer.setStyle({
-                fillColor: '#ffff00',
-                fillOpacity: 1
-              });
-            }
-        }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[-43.63326864168316,-72.48349842006962],[4.516991876245092,-5.091033420069639]]);
+        }).fitBounds([[-44.58736059479553,-89.54460966542749],[19.412639405204434,0.031598513011083185]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
-        var measureControl = new L.Control.Measure({
-            position: 'topleft',
-            primaryLengthUnit: 'meters',
-            secondaryLengthUnit: 'kilometers',
-            primaryAreaUnit: 'sqmeters',
-            secondaryAreaUnit: 'hectares'
-        });
-        measureControl.addTo(map);
-        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
-        .innerHTML = '';
-        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
-        .className += ' fas fa-ruler';
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
         }
@@ -90,15 +63,7 @@
         });
         layer_OSMStandard_0;
         map.addLayer(layer_OSMStandard_0);
-        function pop_Herbicidas_1(feature, layer) {
-            layer.on({
-                mouseout: function(e) {
-                    for (i in e.target._eventParents) {
-                        e.target._eventParents[i].resetStyle(e.target);
-                    }
-                },
-                mouseover: highlightFeature,
-            });
+        function pop_resistencias_of_1(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2"><strong>Especie</strong><br />' + (feature.properties['Especie'] !== null ? autolinker.link(feature.properties['Especie'].toLocaleString()) : '') + '</td>\
@@ -110,19 +75,28 @@
                         <td colspan="2"><strong>Longitude</strong><br />' + (feature.properties['Longitude'] !== null ? autolinker.link(feature.properties['Longitude'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>N° MA</strong><br />' + (feature.properties['N° MA'] !== null ? autolinker.link(feature.properties['N° MA'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>N° RMA</strong><br />' + (feature.properties['N° RMA'] !== null ? autolinker.link(feature.properties['N° RMA'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>Mec Acao</strong><br />' + (feature.properties['Mec Acao'] !== null ? autolinker.link(feature.properties['Mec Acao'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>RMA</strong><br />' + (feature.properties['RMA'] !== null ? autolinker.link(feature.properties['RMA'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>N° GQ</strong><br />' + (feature.properties['N° GQ'] !== null ? autolinker.link(feature.properties['N° GQ'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>MA</strong><br />' + (feature.properties['MA'] !== null ? autolinker.link(feature.properties['MA'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>Gr  Quimic</strong><br />' + (feature.properties['Gr  Quimic'] !== null ? autolinker.link(feature.properties['Gr  Quimic'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>N° RGQ</strong><br />' + (feature.properties['N° RGQ'] !== null ? autolinker.link(feature.properties['N° RGQ'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>N° Herb</strong><br />' + (feature.properties['N° Herb'] !== null ? autolinker.link(feature.properties['N° Herb'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>RGQ</strong><br />' + (feature.properties['RGQ'] !== null ? autolinker.link(feature.properties['RGQ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>GQ</strong><br />' + (feature.properties['GQ'] !== null ? autolinker.link(feature.properties['GQ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>N° Herbi</strong><br />' + (feature.properties['N° Herbi'] !== null ? autolinker.link(feature.properties['N° Herbi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>RHerb</strong><br />' + (feature.properties['RHerb'] !== null ? autolinker.link(feature.properties['RHerb'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <td colspan="2"><strong>Herbicidas</strong><br />' + (feature.properties['Herbicidas'] !== null ? autolinker.link(feature.properties['Herbicidas'].toLocaleString()) : '') + '</td>\
@@ -131,60 +105,240 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_Herbicidas_1_0() {
+        function style_resistencias_of_1_0() {
             return {
-                pane: 'pane_Herbicidas_1',
-        rotationAngle: 0.0,
-        rotationOrigin: 'center center',
-        icon: L.icon({
-            iconUrl: 'markers/blue-marker.svg',
-            iconSize: [31.919999999999998, 31.919999999999998]
-        }),
+                pane: 'pane_resistencias_of_1',
                 interactive: true,
             }
         }
-        map.createPane('pane_Herbicidas_1');
-        map.getPane('pane_Herbicidas_1').style.zIndex = 401;
-        map.getPane('pane_Herbicidas_1').style['mix-blend-mode'] = 'normal';
-        var layer_Herbicidas_1 = new L.geoJson(json_Herbicidas_1, {
+        map.createPane('pane_resistencias_of_1');
+        map.getPane('pane_resistencias_of_1').style.zIndex = 401;
+        map.getPane('pane_resistencias_of_1').style['mix-blend-mode'] = 'normal';
+        var layer_resistencias_of_1 = new L.geoJson(json_resistencias_of_1, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_Herbicidas_1',
-            layerName: 'layer_Herbicidas_1',
-            pane: 'pane_Herbicidas_1',
-            onEachFeature: pop_Herbicidas_1,
+            dataVar: 'json_resistencias_of_1',
+            layerName: 'layer_resistencias_of_1',
+            pane: 'pane_resistencias_of_1',
+            onEachFeature: pop_resistencias_of_1,
             pointToLayer: function (feature, latlng) {
                 var context = {
                     feature: feature,
                     variables: {}
                 };
-                return L.marker(latlng, style_Herbicidas_1_0(feature));
+                return L.circleMarker(latlng, style_resistencias_of_1_0(feature));
             },
         });
-        var cluster_Herbicidas_1 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+        var cluster_resistencias_of_1 = new L.MarkerClusterGroup({showCoverageOnHover: false,
             spiderfyDistanceMultiplier: 2});
-        cluster_Herbicidas_1.addLayer(layer_Herbicidas_1);
+        cluster_resistencias_of_1.addLayer(layer_resistencias_of_1);
 
-        bounds_group.addLayer(layer_Herbicidas_1);
-        cluster_Herbicidas_1.addTo(map);
-        var osmGeocoder = new L.Control.Geocoder({
-            collapsed: true,
-            position: 'topleft',
-            text: 'Search',
-            title: 'Testing'
-        }).addTo(map);
-        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
-        .className += ' fa fa-search';
-        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
-        .title += 'Search for a place';
+        bounds_group.addLayer(layer_resistencias_of_1);
+        cluster_resistencias_of_1.addTo(map);
         setBounds();
-        map.addControl(new L.Control.Search({
-            layer: cluster_Herbicidas_1,
-            initial: false,
-            hideMarkerOnCollapse: true,
-            propertyName: 'Especie'}));
-        document.getElementsByClassName('search-button')[0].className +=
-         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"RHerb": "str","RMA": "str","RGQ": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_RHerb = document.createElement('div');
+            div_RHerb.id = "div_RHerb";
+            div_RHerb.className= "filterselect";
+            document.getElementById("menu").appendChild(div_RHerb);
+            sel_RHerb = document.createElement('select');
+            sel_RHerb.multiple = true;
+            sel_RHerb.size = 3;
+            sel_RHerb.id = "sel_RHerb";
+            var RHerb_options_str = "<option value='' unselected></option>";
+            sel_RHerb.onchange = function(){filterFunc()};
+            RHerb_options_str  += '<option value="Resistente">Resistente</option>';
+            RHerb_options_str  += '<option value="Resistência Multipla">Resistência Multipla</option>';
+            RHerb_options_str  += '<option value="Resistência Simples">Resistência Simples</option>';
+            sel_RHerb.innerHTML = RHerb_options_str;
+            div_RHerb.appendChild(sel_RHerb);
+            var lab_RHerb = document.createElement('div');
+            lab_RHerb.innerHTML = 'RHerb';
+            lab_RHerb.className = 'filterlabel';
+            div_RHerb.appendChild(lab_RHerb);
+            var reset_RHerb = document.createElement('div');
+            reset_RHerb.innerHTML = 'clear filter';
+            reset_RHerb.className = 'filterlabel';
+            reset_RHerb.onclick = function() {
+                var options = document.getElementById("sel_RHerb").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_RHerb.appendChild(reset_RHerb);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_RMA = document.createElement('div');
+            div_RMA.id = "div_RMA";
+            div_RMA.className= "filterselect";
+            document.getElementById("menu").appendChild(div_RMA);
+            sel_RMA = document.createElement('select');
+            sel_RMA.multiple = true;
+            sel_RMA.size = 1;
+            sel_RMA.id = "sel_RMA";
+            var RMA_options_str = "<option value='' unselected></option>";
+            sel_RMA.onchange = function(){filterFunc()};
+            RMA_options_str  += '<option value="Resistência Multipla">Resistência Multipla</option>';
+            sel_RMA.innerHTML = RMA_options_str;
+            div_RMA.appendChild(sel_RMA);
+            var lab_RMA = document.createElement('div');
+            lab_RMA.innerHTML = 'RMA';
+            lab_RMA.className = 'filterlabel';
+            div_RMA.appendChild(lab_RMA);
+            var reset_RMA = document.createElement('div');
+            reset_RMA.innerHTML = 'clear filter';
+            reset_RMA.className = 'filterlabel';
+            reset_RMA.onclick = function() {
+                var options = document.getElementById("sel_RMA").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_RMA.appendChild(reset_RMA);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_RGQ = document.createElement('div');
+            div_RGQ.id = "div_RGQ";
+            div_RGQ.className= "filterselect";
+            document.getElementById("menu").appendChild(div_RGQ);
+            sel_RGQ = document.createElement('select');
+            sel_RGQ.multiple = true;
+            sel_RGQ.size = 3;
+            sel_RGQ.id = "sel_RGQ";
+            var RGQ_options_str = "<option value='' unselected></option>";
+            sel_RGQ.onchange = function(){filterFunc()};
+            RGQ_options_str  += '<option value="Resistente">Resistente</option>';
+            RGQ_options_str  += '<option value="Resistência Multipla">Resistência Multipla</option>';
+            RGQ_options_str  += '<option value="Resistência Simples">Resistência Simples</option>';
+            sel_RGQ.innerHTML = RGQ_options_str;
+            div_RGQ.appendChild(sel_RGQ);
+            var lab_RGQ = document.createElement('div');
+            lab_RGQ.innerHTML = 'RGQ';
+            lab_RGQ.className = 'filterlabel';
+            div_RGQ.appendChild(lab_RGQ);
+            var reset_RGQ = document.createElement('div');
+            reset_RGQ.innerHTML = 'clear filter';
+            reset_RGQ.className = 'filterlabel';
+            reset_RGQ.onclick = function() {
+                var options = document.getElementById("sel_RGQ").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_RGQ.appendChild(reset_RGQ);
         </script>
     </body>
 </html>
